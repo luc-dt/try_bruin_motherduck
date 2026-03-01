@@ -129,56 +129,6 @@ git push origin master
 
 ---
 
-## 🐛 Errors Encountered & Fixed (AI-Assisted)
-
-This project was built step by step with an AI agent. Here are the key issues solved:
-
-### Issue 1: Two `.bruin.yml` files
-**Error:** `connection 'motherduck-prod' not found in config file`  
-**Cause:** There were two `.bruin.yml` files — one at project level, one at root. Bruin reads the **root** level file.  
-**Fix:** Update the root-level `.bruin.yml` with the MotherDuck connection.
-
----
-
-### Issue 2: Invalid MotherDuck Token
-**Error:** `Jwt header is an invalid Base64url encoded`  
-**Cause:** Token was a placeholder (`your-eyJ...`) instead of the real token.  
-**Fix:** Get the real token from **app.motherduck.com → Settings → Tokens** and paste it into `.bruin.yml`.
-
----
-
-### Issue 3: HTTP 403 on Parquet Files
-**Error:** `Skipping yellow_tripdata_2026-01.parquet: HTTP 403`  
-**Cause:** NYC Taxi dataset is published with a 2-3 month lag. Future dates don't exist yet.  
-**Fix:** Run with past dates that have data: `--start-date 2025-01-01 --end-date 2025-01-31`
-
----
-
-### Issue 4: Table Does Not Exist
-**Error:** `Catalog Error: Table with name trips does not exist!`  
-**Cause:** No data was fetched (all 403s), so the table was never created, but pipeline tried to append to it.  
-**Fix:** Use a valid past date range with existing data.
-
----
-
-### Issue 5: duckdb.db Too Large for GitHub
-**Error:** `File duckdb.db is 423.26 MB; this exceeds GitHub's file size limit of 100.00 MB`  
-**Fix:** Remove from git history using `git filter-repo`:
-```bash
-pip install git-filter-repo
-git filter-repo --path my-taxi-pipeline/duckdb.db --invert-paths --force
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-git push -u origin master --force
-```
-
----
-
-### Issue 6: PERMISSION_DENIED on Bruin Cloud
-**Error:** `PERMISSION_DENIED, RPC 'CREATE_SLT'`  
-**Cause:** Bruin Cloud detected the `motherduck-prod` connection name from `.bruin.yml` but didn't have the actual token stored in its secrets.  
-**Fix:** Go to **Bruin Cloud → Settings → Connections** → manually add `motherduck-prod` with the real token.
-
----
 
 ## 📊 Data Flow
 
